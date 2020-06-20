@@ -1,12 +1,8 @@
 use crate::chunk::Chunk;
-use crate::common::OpCode::{
-    OpAdd, OpConstant, OpDivide, OpFalse, OpMultiply, OpNegate, OpNil, OpReturn, OpSubtract, OpTrue,
-};
+use crate::common::OpCode::*;
 use crate::common::TokenType;
 use crate::common::TokenType::{Eof, RightParen};
-use crate::parser::Precedence::{
-    PrecAssignment, PrecFactor, PrecNone, PrecTerm, PrecTernary, PrecUnary,
-};
+use crate::parser::Precedence::*;
 use crate::parser::{Parser, Precedence};
 use crate::value::Value;
 
@@ -81,14 +77,14 @@ impl<'source_lifetime> Compiler<'source_lifetime> {
             precedence: PrecFactor,
         }, // TOKEN_STAR 10
         ParseRule {
-            prefix: None,
+            prefix: Some(Compiler::unary),
             infix: None,
             precedence: PrecNone,
         }, // TOKEN_BANG 11
         ParseRule {
             prefix: None,
-            infix: None,
-            precedence: PrecNone,
+            infix: Some(Compiler::binary),
+            precedence: PrecEquality,
         }, // TOKEN_BANG_EQUAL 12
         ParseRule {
             prefix: None,
@@ -117,28 +113,28 @@ impl<'source_lifetime> Compiler<'source_lifetime> {
         }, // TOKEN_SLASH_EQUAL 17
         ParseRule {
             prefix: None,
-            infix: None,
-            precedence: PrecNone,
+            infix: Some(Compiler::binary),
+            precedence: PrecComparison,
         }, // TOKEN_EQUAL_EQUAL 18
         ParseRule {
             prefix: None,
-            infix: None,
-            precedence: PrecNone,
+            infix: Some(Compiler::binary),
+            precedence: PrecComparison,
         }, // TOKEN_GREATER 19
         ParseRule {
             prefix: None,
-            infix: None,
-            precedence: PrecNone,
+            infix: Some(Compiler::binary),
+            precedence: PrecComparison,
         }, // TOKEN_GREATER_EQUAL 20
         ParseRule {
             prefix: None,
-            infix: None,
-            precedence: PrecNone,
+            infix: Some(Compiler::binary),
+            precedence: PrecComparison,
         }, // TOKEN_LESS 21
         ParseRule {
             prefix: None,
-            infix: None,
-            precedence: PrecNone,
+            infix: Some(Compiler::binary),
+            precedence: PrecComparison,
         }, // TOKEN_LESS_EQUAL 22
         ParseRule {
             prefix: None,
@@ -314,7 +310,7 @@ impl<'source_lifetime> Compiler<'source_lifetime> {
             precedence: PrecFactor,
         }", // TOKEN_STAR
         "ParseRule {
-            prefix: None,
+            prefix: Some(Compiler::unary),
             infix: None,
             precedence: PrecNone,
         }", // TOKEN_BANG
@@ -539,6 +535,7 @@ impl<'source_lifetime> Compiler<'source_lifetime> {
         comp.parse_precedence(PrecUnary);
         match operator_type {
             TokenType::Minus => comp.emit_byte(OpNegate.into()),
+            TokenType::Bang => comp.emit_byte(OpNot.into()),
             _ => {}
         }
     }
@@ -554,6 +551,12 @@ impl<'source_lifetime> Compiler<'source_lifetime> {
             TokenType::Minus => comp.emit_byte(OpSubtract.into()),
             TokenType::Star => comp.emit_byte(OpMultiply.into()),
             TokenType::Slash => comp.emit_byte(OpDivide.into()),
+            TokenType::BangEqual => comp.emit_byte(OpNotEqual.into()),
+            TokenType::EqualEqual => comp.emit_byte(OpEqual.into()),
+            TokenType::Greater => comp.emit_byte(OpGreater.into()),
+            TokenType::GreaterEqual => comp.emit_byte(OpGreaterEqual.into()),
+            TokenType::Less => comp.emit_byte(OpLess.into()),
+            TokenType::LessEqual => comp.emit_byte(OpLessEqual.into()),
             _ => {}
         }
     }

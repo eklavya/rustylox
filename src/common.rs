@@ -9,13 +9,19 @@ pub enum OpCode {
     OpNil,
     OpTrue,
     OpFalse,
+    OpEqual,
+    OpGreater,
+    OpLess,
+    OpGreaterEqual,
+    OpLessEqual,
     OpNegate,
     OpAdd,
     OpSubtract,
     OpMultiply,
     OpDivide,
-    // OpTest,
-    // OpChoose,
+    OpNot,
+    OpNotEqual, // OpTest,
+                // OpChoose
 }
 
 #[derive(Debug, IntoPrimitive, UnsafeFromPrimitive, Copy, Clone, Ord, PartialOrd, Eq, PartialEq)]

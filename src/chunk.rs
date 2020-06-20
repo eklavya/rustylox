@@ -115,6 +115,13 @@ impl Chunk {
             //     println!("Unknown opcode {:?}", i);
             //     offset + 1
             // }
+            OpCode::OpNot => simple_instruction("OP_NOT".into(), offset),
+            OpCode::OpEqual => simple_instruction("OP_EQUAL".into(), offset),
+            OpCode::OpGreater => simple_instruction("OP_GREATER".into(), offset),
+            OpCode::OpLess => simple_instruction("OP_LESS".into(), offset),
+            OpCode::OpGreaterEqual => simple_instruction("OP_GREATER_EQUAL".into(), offset),
+            OpCode::OpLessEqual => simple_instruction("OP_LESS_EQUAL".into(), offset),
+            OpCode::OpNotEqual => simple_instruction("OP_NOT_EQUAL".into(), offset),
         }
     }
 

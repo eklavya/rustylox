@@ -18,13 +18,13 @@ pub enum InterpretResult {
 }
 
 macro_rules! binary_op {
-    ($self:ident, $op: tt) => {
+    ($self:ident, $variant:ident, $op: tt) => {
     {
         let b = $self.pop();
         let a = $self.pop();
         match (a, b) {
             (Value::Number(av), Value::Number(bv)) => {
-                $self.push(Value::Number(av $op bv));
+                $self.push(Value::$variant(av $op bv));
             }
             _ => {
                 eprintln!("Operands must be numbers.");
@@ -167,14 +167,51 @@ impl VM {
                         return InterpretRuntimeError;
                     }
                 }
-                OpCode::OpAdd => binary_op!(self, +),
-                OpCode::OpSubtract => binary_op!(self, -),
-                OpCode::OpMultiply => binary_op!(self, *),
-                OpCode::OpDivide => binary_op!(self, /),
+                OpCode::OpAdd => binary_op!(self, Number, +),
+                OpCode::OpSubtract => binary_op!(self, Number, -),
+                OpCode::OpMultiply => binary_op!(self, Number, *),
+                OpCode::OpDivide => binary_op!(self, Number, /),
                 OpCode::OpNil => self.push(Value::Empty),
                 OpCode::OpTrue => self.push(Value::Bool(true)),
                 OpCode::OpFalse => self.push(Value::Bool(false)),
+                OpCode::OpNot => {
+                    let v = self.pop();
+                    self.push(Value::Bool(VM::is_falsey(v)))
+                }
+                OpCode::OpEqual => {
+                    let a = self.pop();
+                    let b = self.pop();
+                    self.push(Value::Bool(VM::values_equal(a, b)))
+                }
+                OpCode::OpGreater => binary_op!(self, Bool, >),
+                OpCode::OpLess => binary_op!(self, Bool, <),
+                OpCode::OpGreaterEqual => binary_op!(self, Bool, >=),
+                OpCode::OpLessEqual => binary_op!(self, Bool, <=),
+                OpCode::OpNotEqual => {
+                    let a = self.pop();
+                    let b = self.pop();
+                    self.push(Value::Bool(!VM::values_equal(a, b)))
+                }
             };
+        }
+    }
+
+    fn values_equal(a: Value, b: Value) -> bool {
+        match (a, b) {
+            (Value::Bool(b1), Value::Bool(b2)) => b1 == b2,
+            (Value::Bool(_), _) => false,
+            (Value::Number(n1), Value::Number(n2)) => n1 == n2,
+            (Value::Number(_), _) => false,
+            (Value::Empty, Value::Empty) => true,
+            (Value::Empty, _) => false,
+        }
+    }
+
+    fn is_falsey(v: Value) -> bool {
+        match v {
+            Value::Bool(b) => !b,
+            Value::Number(_) => false,
+            Value::Empty => true,
         }
     }
 }
