@@ -277,7 +277,7 @@ impl<'source_lifetime> Scanner<'source_lifetime> {
         token_type: TokenType,
     ) -> TokenType {
         if self.current - self.start == start + length
-            && (self.source[{start}..{ self.current }].eq(rest))
+            && (self.source[{self.start + start}..{ self.current }].eq(rest))
         {
             token_type
         } else {

@@ -29,222 +29,222 @@ impl<'source_lifetime> Compiler<'source_lifetime> {
             prefix: Some(Compiler::grouping),
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_LEFT_PAREN
+        }, // TOKEN_LEFT_PAREN 0
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_RIGHT_PAREN
+        }, // TOKEN_RIGHT_PAREN 1
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_LEFT_BRACE
+        }, // TOKEN_LEFT_BRACE 2
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_RIGHT_BRACE
+        }, // TOKEN_RIGHT_BRACE 3
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_COMMA
+        }, // TOKEN_COMMA 4
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_DOT
+        }, // TOKEN_DOT 5
         ParseRule {
             prefix: Some(Compiler::unary),
             infix: Some(Compiler::binary),
             precedence: PrecTerm,
-        }, // TOKEN_MINUS
+        }, // TOKEN_MINUS 6
         ParseRule {
             prefix: None,
             infix: Some(Compiler::binary),
             precedence: PrecTerm,
-        }, // TOKEN_PLUS
+        }, // TOKEN_PLUS 7
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_SEMICOLON
+        }, // TOKEN_SEMICOLON 8
         ParseRule {
             prefix: None,
             infix: Some(Compiler::binary),
             precedence: PrecFactor,
-        }, // TOKEN_SLASH
+        }, // TOKEN_SLASH 9
         ParseRule {
             prefix: None,
             infix: Some(Compiler::binary),
             precedence: PrecFactor,
-        }, // TOKEN_STAR
+        }, // TOKEN_STAR 10
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_BANG
+        }, // TOKEN_BANG 11
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_BANG_EQUAL
+        }, // TOKEN_BANG_EQUAL 12
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_EQUAL
+        }, // TOKEN_EQUAL 13
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_PLUS_EQUAL
+        }, // TOKEN_PLUS_EQUAL 14
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_MINUS_EQUAL
+        }, // TOKEN_MINUS_EQUAL 15
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_STAR_EQUAL
+        }, // TOKEN_STAR_EQUAL 16
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_SLASH_EQUAL
+        }, // TOKEN_SLASH_EQUAL 17
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_EQUAL_EQUAL
+        }, // TOKEN_EQUAL_EQUAL 18
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_GREATER
+        }, // TOKEN_GREATER 19
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_GREATER_EQUAL
+        }, // TOKEN_GREATER_EQUAL 20
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_LESS
+        }, // TOKEN_LESS 21
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_LESS_EQUAL
+        }, // TOKEN_LESS_EQUAL 22
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_IDENTIFIER
+        }, // TOKEN_IDENTIFIER 23
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_STRING
+        }, // TOKEN_STRING 24
         ParseRule {
             prefix: Some(Compiler::number),
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_NUMBER
+        }, // TOKEN_NUMBER 25
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_AND
+        }, // TOKEN_AND 26
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_CLASS
+        }, // TOKEN_CLASS 27
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_ELSE
+        }, // TOKEN_ELSE 28
         ParseRule {
             prefix: Some(Compiler::literal),
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_FALSE
+        }, // TOKEN_FALSE 29
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_FOR
+        }, // TOKEN_FOR 30
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_FUN
+        }, // TOKEN_FUN 31
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_IF
+        }, // TOKEN_IF 32
         ParseRule {
             prefix: Some(Compiler::literal),
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_NIL
+        }, // TOKEN_NIL 33
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_OR
+        }, // TOKEN_OR 34
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_PRINT
+        }, // TOKEN_PRINT 35
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_RETURN
+        }, // TOKEN_RETURN 36
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_SUPER
+        }, // TOKEN_SUPER 37
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_THIS
+        }, // TOKEN_THIS 38
         ParseRule {
             prefix: Some(Compiler::literal),
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_TRUE
+        }, // TOKEN_TRUE 39
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_VAR
+        }, // TOKEN_VAR 40
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_WHILE
+        }, // TOKEN_WHILE 41
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_ERROR
+        }, // TOKEN_ERROR 42
         ParseRule {
             prefix: None,
             infix: None,
             precedence: PrecNone,
-        }, // TOKEN_EOF
+        }, // TOKEN_EOF 43
            // ParseRule {
            //     prefix: None,
            //     infix: Some(Compiler::choose),
@@ -562,6 +562,7 @@ impl<'source_lifetime> Compiler<'source_lifetime> {
         self.parser.advance();
         // println!("parser is {:?} {:?}", self.parser.prev, self.parser.current);
         let ind: u8 = self.parser.prev.as_ref().unwrap().token_type.into();
+        // println!("token type should be {:?} and is {:?}", self.parser.prev.as_ref().unwrap().token_type, ind);
         // println!(
         //     "precedence for {:?} is {}",
         //     precedence,
