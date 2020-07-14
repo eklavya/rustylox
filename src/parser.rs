@@ -68,7 +68,7 @@ impl<'source_lifetime> Parser<'source_lifetime> {
     }
 
     fn error_at(&mut self, token: &str, msg: &'static str) {
-        let t = if token.eq("current") {
+        let t = if token.eq("current") && self.current.is_some() {
             self.current.as_ref().unwrap()
         } else {
             self.prev.as_ref().unwrap()

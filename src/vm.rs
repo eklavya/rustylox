@@ -1,8 +1,11 @@
 use crate::chunk::Chunk;
 use crate::common::OpCode;
 use crate::compiler::Compiler;
+use crate::gc::GC;
+use crate::obj::{self, ObjString, ObjType, Object};
 use crate::value::{print_value, Value};
 use crate::vm::InterpretResult::{InterpretCompileError, InterpretOk, InterpretRuntimeError};
+use std::alloc::Layout;
 
 pub struct VM {
     chunk: Chunk,
@@ -34,16 +37,6 @@ macro_rules! binary_op {
         }
     }
     }
-}
-
-macro_rules! runtime_error {
-    ($self:ident) => {
-        eprintln!(fmt_str, args);
-        let instruction = self.ip - 1;
-        let line = self.chunk.get_line(instruction);
-        eprintln!("[line {}] in script", line);
-        self.reset_stack();
-    };
 }
 
 impl VM {
@@ -80,7 +73,11 @@ impl VM {
     }
 
     pub fn peek(&self) -> Value {
-        self.stack[self.top_stack]
+        self.stack[self.top_stack - 1]
+    }
+
+    pub fn peek_next(&self) -> Value {
+        self.stack[self.top_stack - 2]
     }
 
     pub fn free(&mut self) -> () {
@@ -167,7 +164,28 @@ impl VM {
                         return InterpretRuntimeError;
                     }
                 }
-                OpCode::OpAdd => binary_op!(self, Number, +),
+                OpCode::OpAdd => {
+                    let a = self.peek();
+                    let b = self.peek_next();
+                    match (a, b) {
+                        (Value::Number(_), Value::Number(_)) => binary_op!(self, Number, +),
+                        (Value::Obj(o1), Value::Obj(o2)) => unsafe {
+                            match ((*o1).get_type(), (*o2).get_type()) {
+                                (ObjType::OString, ObjType::OString) => {
+                                    let s = VM::concatenate(o2, o1);
+                                    self.pop();
+                                    self.pop();
+                                    self.push(Value::Obj(s));
+                                }
+                            }
+                        },
+                        _ => {
+                            eprintln!("Operands must be numbers or strings.");
+                            self.runtime_error();
+                            return InterpretRuntimeError;
+                        }
+                    }
+                }
                 OpCode::OpSubtract => binary_op!(self, Number, -),
                 OpCode::OpMultiply => binary_op!(self, Number, *),
                 OpCode::OpDivide => binary_op!(self, Number, /),
@@ -199,11 +217,19 @@ impl VM {
     fn values_equal(a: Value, b: Value) -> bool {
         match (a, b) {
             (Value::Bool(b1), Value::Bool(b2)) => b1 == b2,
-            (Value::Bool(_), _) => false,
             (Value::Number(n1), Value::Number(n2)) => n1 == n2,
-            (Value::Number(_), _) => false,
             (Value::Empty, Value::Empty) => true,
-            (Value::Empty, _) => false,
+            (Value::Obj(o1), Value::Obj(o2)) => unsafe {
+                match ((*o1).get_type(), (*o2).get_type()) {
+                    (ObjType::OString, ObjType::OString) => {
+                        let s1 = (o1 as *const ObjString).read();
+                        let s2 = (o2 as *const ObjString).read();
+                        s1.len == s2.len && s1.chars == s2.chars
+                    }
+                    _ => false,
+                }
+            },
+            _ => false,
         }
     }
 
@@ -212,6 +238,21 @@ impl VM {
             Value::Bool(b) => !b,
             Value::Number(_) => false,
             Value::Empty => true,
+            Value::Obj(_) => false,
+        }
+    }
+
+    fn concatenate(o1: *mut dyn Object, o2: *mut dyn Object) -> *mut ObjString {
+        unsafe {
+            let s1 = (o1 as *const ObjString).read();
+            let s2 = (o2 as *const ObjString).read();
+            let o = GC::alloc(Layout::new::<ObjString>()) as *mut ObjString;
+            (*o).len = s1.len + s2.len;
+            let chars = GC::alloc(Layout::array::<u8>((*o).len).unwrap());
+            std::ptr::copy(s1.chars, chars, s1.len);
+            std::ptr::copy(s2.chars, chars.offset(s1.len as isize), s2.len);
+            (*o).chars = chars;
+            o
         }
     }
 }

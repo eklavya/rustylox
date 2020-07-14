@@ -191,7 +191,7 @@ impl<'source_lifetime> Scanner<'source_lifetime> {
     }
 
     fn string(&mut self) -> Result<Token<'source_lifetime>, &'static str> {
-        while self.peek() != '"' && !self.is_at_end() {
+        while !self.is_at_end() && self.peek() != '"' {
             if self.peek() == '\n' {
                 self.line += 1;
             }
@@ -277,7 +277,7 @@ impl<'source_lifetime> Scanner<'source_lifetime> {
         token_type: TokenType,
     ) -> TokenType {
         if self.current - self.start == start + length
-            && (self.source[{self.start + start}..{ self.current }].eq(rest))
+            && (self.source[{ self.start + start }..{ self.current }].eq(rest))
         {
             token_type
         } else {

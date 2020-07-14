@@ -1,6 +1,8 @@
 mod chunk;
 mod common;
 mod compiler;
+mod gc;
+mod obj;
 mod parser;
 mod scanner;
 mod value;

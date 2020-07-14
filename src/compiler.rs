@@ -4,7 +4,7 @@ use crate::common::TokenType;
 use crate::common::TokenType::{Eof, RightParen};
 use crate::parser::Precedence::*;
 use crate::parser::{Parser, Precedence};
-use crate::value::Value;
+use crate::{obj, value::Value};
 
 type ParseFn = Option<fn(&mut Compiler) -> ()>;
 
@@ -142,7 +142,7 @@ impl<'source_lifetime> Compiler<'source_lifetime> {
             precedence: PrecNone,
         }, // TOKEN_IDENTIFIER 23
         ParseRule {
-            prefix: None,
+            prefix: Some(Compiler::string),
             infix: None,
             precedence: PrecNone,
         }, // TOKEN_STRING 24
@@ -540,6 +540,11 @@ impl<'source_lifetime> Compiler<'source_lifetime> {
         }
     }
 
+    fn string(comp: &mut Compiler) {
+        let obj = obj::copy_string(comp.parser.prev.as_ref().unwrap().lexeme.trim_matches('"'));
+        comp.emit_constant(Value::Obj(obj));
+    }
+
     fn binary(comp: &mut Compiler) {
         let operator_type = comp.parser.prev.as_ref().unwrap().token_type;
         let ind: u8 = operator_type.into();
@@ -576,6 +581,7 @@ impl<'source_lifetime> Compiler<'source_lifetime> {
             self.parser.error("Expected expression.");
         } else {
             rule.prefix.unwrap()(self);
+            //println!("{:?}", self.chunk.get_constant(0));
             // println!("will check precedence for {:?}", precedence);
             while self.is_lower_prec(precedence) {
                 self.parser.advance();
